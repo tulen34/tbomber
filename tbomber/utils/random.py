@@ -1,8 +1,8 @@
 import random
 
 
-def __unicode_range(l, r):
-    return [chr(i) for i in range(ord(l), ord(r) + 1)]
+def __unicode_range(a, b):
+    return [chr(i) for i in range(ord(a), ord(b) + 1)]
 
 
 def __random_str(sources):
