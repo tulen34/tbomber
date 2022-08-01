@@ -1,5 +1,6 @@
 import random
 
+__all__ = ['russian_word', 'english_word', 'email']
 
 def __unicode_range(a, b):
     return [chr(i) for i in range(ord(a), ord(b) + 1)]

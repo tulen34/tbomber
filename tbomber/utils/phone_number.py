@@ -1,7 +1,7 @@
-import re
 import string
 from typing import AnyStr
 
+__all__ = ['PhoneNumber']
 
 class PhoneNumber:
     def __init__(self, phone_number: AnyStr):
