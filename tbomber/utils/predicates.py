@@ -1,5 +1,6 @@
-from httpx import Response, codes
 from typing import Callable
+
+from httpx import Response, codes
 
 __all__ = ['PredicateType', 'status_code_is_ok']
 
