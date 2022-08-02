@@ -1,14 +1,23 @@
+import sys
 from collections import namedtuple
-from typing import Optional, Callable, Awaitable
+from inspect import getmembers
+from typing import Optional, Callable, Awaitable, Set
 
 from httpx import AsyncClient, Response
 
 from .utils import PhoneNumber
 from .utils.predicates import PredicateType, status_code_is_ok
 
-SenderFuncType = Callable[[AsyncClient, PhoneNumber], Awaitable[Response]]
+__all__ = ['SenderFuncType', 'Sender', 'gather', 'sender']
 
-Sender = namedtuple('Sender', ['func', 'timeout', 'predicate'])
+SenderFuncType = Callable[[AsyncClient, PhoneNumber], Awaitable[Response]]
+Sender = namedtuple("Sender", ["func", "timeout", "predicate"])
+
+
+def gather() -> Set[Sender]:
+    return {
+        m[1] for m in getmembers(sys.modules[__name__], lambda m: isinstance(m, Sender))
+    }
 
 
 def sender(
@@ -17,6 +26,7 @@ def sender(
 ):
     def wrapper(func: SenderFuncType):
         return Sender(func, timeout, predicate)
+
     return wrapper
 
 
