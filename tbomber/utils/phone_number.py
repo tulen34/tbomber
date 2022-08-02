@@ -3,6 +3,7 @@ from typing import AnyStr
 
 __all__ = ['PhoneNumber']
 
+
 class PhoneNumber:
     def __init__(self, phone_number: AnyStr):
         self.__value = ''.join(c for c in phone_number if c in string.digits)
