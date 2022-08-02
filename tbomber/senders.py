@@ -1,27 +1,22 @@
-import asyncio
+from collections import namedtuple
+from typing import Optional, Callable, Awaitable
 
 from httpx import AsyncClient, Response
-from typing import Optional, Callable, Any, Awaitable
-from tbomber.utils import *
+
+from .utils import PhoneNumber
+from .utils.predicates import PredicateType, status_code_is_ok
+
+SenderFuncType = Callable[[AsyncClient, PhoneNumber], Awaitable[Response]]
+
+Sender = namedtuple('Sender', ['func', 'timeout', 'predicate'])
 
 
 def sender(
     timeout: Optional[int] = None,
-    success_resp: Optional[str] = None,
-    success_code: Optional[int] = 200,
+    predicate: Optional[PredicateType] = status_code_is_ok,
 ):
-    def wrapper(func: Callable[[AsyncClient, PhoneNumber], Awaitable[Response]]):
-        async def sender_func(
-            client: AsyncClient, phone_number: PhoneNumber
-        ) -> Response:
-            print(func.__name__)
-            resp = await func(client, phone_number)
-            print(resp.status_code, resp.url)
-            print(resp.text)
-            return resp
-
-        return sender_func
-
+    def wrapper(func: SenderFuncType):
+        return Sender(func, timeout, predicate)
     return wrapper
 
 
@@ -42,16 +37,3 @@ async def youla_ru(client, phone_number):
     return await client.post(
         "https://youla.ru/web-api/auth/request_code", data={"phone": phone_number}
     )
-
-
-async def main():
-    async with AsyncClient() as client:
-        phone_number = PhoneNumber("+79999999999")
-        print(phone_number)
-        resp = await youla_ru(client, phone_number)
-        print(resp.status_code)
-
-
-if __name__ == "__main__":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    asyncio.run(main())
