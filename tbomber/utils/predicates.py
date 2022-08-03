@@ -1,10 +1,6 @@
-from typing import Callable
-
 from httpx import Response, codes
 
-__all__ = ['PredicateType', 'status_code_is_ok']
-
-PredicateType = Callable[[Response], bool]
+__all__ = ['status_code_is_ok']
 
 
 def status_code_is_ok(resp: Response) -> bool:
